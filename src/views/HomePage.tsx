@@ -72,24 +72,25 @@ export function HomePage() {
 
 			data.quizzes.forEach((quiz: any) => {
 			  quiz.questions.forEach((question: any) => {
-				const { longitude, latitude } = question.location;
-				if (longitude !== undefined && latitude !== undefined) {
-				   marker = new mapboxgl.Marker({ color: "green" })
-					.setLngLat([Number(longitude), Number(latitude)])
-					.addTo(map);
-                    console.log(question.question);
-                    
-                    
-					const popup = new mapboxgl.Popup()
-                    .setHTML(`<h3>${question.question}</h3>`)
-                    
-        			marker.setPopup(popup);
-                    questions.push({
-                        question: question.question,
-                        username: quiz.username,
-                        quizId: quiz.quizId
-                    });
-				}
+				console.log('Processing question:', question.question);
+				if (question.location && question.location.longitude !== undefined && question.location.latitude !== undefined) {
+					const { longitude, latitude } = question.location;
+					if (!isNaN(Number(longitude)) && !isNaN(Number(latitude))) {
+						marker = new mapboxgl.Marker({ color: "green" })
+							.setLngLat([Number(longitude), Number(latitude)])
+							.addTo(map);
+				
+						const popup = new mapboxgl.Popup()
+							.setHTML(`<h3>${question.question}</h3>`)
+						
+						marker.setPopup(popup);
+						questions.push({
+							question: question.question,
+							username: quiz.username,
+							quizId: quiz.quizId
+						});
+					}
+				}				
             });
             setViewQuiz(questions);
             console.log(viewQuiz);   
